@@ -30,7 +30,7 @@
                     <a class="nav-item nav-link" href="/about">About Page</a>
                 </div>
                 <div class="navbar-nav">
-                    <a class="nav-item nav-link" href="/login">Login</a>
+                    <a class="nav-item nav-link" href="/logIn">Login</a>
                     <a class="nav-item nav-link" href="/registration">Register</a>
                 </div>
             </div>
@@ -42,6 +42,15 @@
     <main role="main" class="container">
         <div class="row">
             <div class="col-md-8">
+                {% with messages = get_flashed_messages(with_categories = true)%}
+                {% if messages %}
+                {%for category , message in messages %}
+                <div class="alert alert-{{category}}">
+                    {{message}}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
                 {% block content %}{% endblock %}
             </div>
             <div class="col-md-4">
