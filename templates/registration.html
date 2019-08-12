@@ -5,6 +5,7 @@
         {{form.hidden_tag() }}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Join Today</legend>
+
             <div class="form-group">
                 {{form.username.label(class="form-control-label")}}
                 {% if form.username.errors %}
@@ -12,11 +13,11 @@
                 <div class="invalid-feedback">
                     {% for error in form.username.errors %}
                     <span>{{error}}</span>
-
-                    {% endfor%}
+                    {% endfor %}
                 </div>
                 {% else %}
-                {{form.username(class="form-control form-control-lg")}}
+
+                {{form.username(class="form-control form-control-lg ")}}
                 {% endif %}
 
             </div>
@@ -63,13 +64,13 @@
                 {{form.password_confirm(class="form-control form-control-lg")}}
                 {% endif %}
             </div>
-            <div class="form-group">
-                {{form.submit_field(class="btn btn-outline-info")}}
 
-            </div>
 
         </fieldset>
+        <div class="form-group">
+            {{form.submit_field(class="btn btn-outline-info")}}
 
+        </div>
     </form>
 
 </div>
