@@ -2,14 +2,12 @@ from flask import Flask, render_template, url_for, flash, redirect
 from form import RegistrationForm, LogInForm
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from readfile import readFiles
+from readfile import ReadFiles
 
-file_read = readFiles()
-file_read.readproperties('resource.properties')
-
+file_read = ReadFiles('resource.properties')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5ed6a070134958b4d5fcdfbd1e83e997'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:1234@localhost:3306/blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = file_read.get_datalink()
 db = SQLAlchemy(app)
 
 
@@ -18,11 +16,11 @@ class User(db.Model):
     user_name = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    image_file = db.Column(db.String(20), unique=True, nullable=False, default='default.jpg')
+    image_file = db.Column(db.String(20),  nullable=False, default='default.jpg')
     posts = db.relationship('Post', backref='author', lazy=True)
 
     def __repr__(self):
-        return f"User('{self.username}','{self.email}','{self.image_file}')"
+        return f"User('{self.user_name}','{self.email}','{self.image_file}')"
 
 
 class Post(db.Model):
