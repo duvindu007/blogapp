@@ -1,4 +1,4 @@
-from app import db
+from blog import db
 from datetime import datetime
 
 

@@ -1,6 +1,7 @@
 from flask import render_template, url_for, flash, redirect
-
-from models import Post, User
+from blog.form import RegistrationForm, LogInForm
+from blog import app
+from blog.models import Post, User
 
 posts = [{'Author': 'John', 'Title': 'book1', 'Content': 'Sci fi', 'Date_Posted': 'April 20 2018'},
          {'Author': 'Ryan', 'Title': 'book2', 'Content': 'Action', 'Date_Posted': 'April 25 2018'}]
