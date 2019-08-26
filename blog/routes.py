@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect
 from blog.form import RegistrationForm, LogInForm
 from blog import app, db, b_crypt
 from blog.models import Post, User
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user , login_required
 
 posts = [{'Author': 'John', 'Title': 'book1', 'Content': 'Sci fi', 'Date_Posted': 'April 20 2018'},
          {'Author': 'Ryan', 'Title': 'book2', 'Content': 'Action', 'Date_Posted': 'April 25 2018'}]
@@ -53,10 +53,11 @@ def login():
 
 @app.route('/logout')
 def logout():
-    login_user()
+    logout_user()
     return redirect(url_for('home'))
 
+
 @app.route('/account')
+@login_required
 def account():
     return render_template('account.html', title='Account')
-
