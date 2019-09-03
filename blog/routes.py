@@ -1,8 +1,8 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from blog.form import RegistrationForm, LogInForm
 from blog import app, db, b_crypt
 from blog.models import Post, User
-from flask_login import login_user, current_user, logout_user , login_required
+from flask_login import login_user, current_user, logout_user, login_required
 
 posts = [{'Author': 'John', 'Title': 'book1', 'Content': 'Sci fi', 'Date_Posted': 'April 20 2018'},
          {'Author': 'Ryan', 'Title': 'book2', 'Content': 'Action', 'Date_Posted': 'April 25 2018'}]
@@ -44,7 +44,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and b_crypt.check_password_hash(user.password, form.password.data):
             login_user(user, form.remember.data)
-            return redirect(url_for('home'))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Log in unsuccessful please check email and password', 'danger')
 
