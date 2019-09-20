@@ -1,3 +1,6 @@
+import os
+import secrets
+from PIL import Image
 from flask import render_template, url_for, flash, redirect, request
 from blog.form import RegistrationForm, LogInForm, UpdateAccountForm
 from blog import app, db, b_crypt
@@ -58,13 +61,29 @@ def logout():
     return redirect(url_for('home'))
 
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/profilepic', picture_fn)
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
         current_user.username = form.username.data
-        current_user.email = form.username.data
+        current_user.email = form.email.data
         db.session.commit()
         flash('Your account is updated !', 'success')
         return redirect(url_for('account'))
@@ -75,3 +94,9 @@ def account():
     image_file = url_for('static', filename='profilepic/' + current_user.image_file)
     return render_template('account.html', title='Account',
                            image_file=image_file, form=form)
+
+
+@app.route("/posts/new")
+@login_required
+def new_posts():
+    return render_template('create_post.html', title='New Posts')
