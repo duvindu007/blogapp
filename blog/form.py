@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField , TextAreaField
 from wtforms.validators import DataRequired, length, Email, EqualTo, ValidationError
 from blog.models import User
 from sqlalchemy.orm import validates
@@ -57,3 +57,10 @@ class UpdateAccountForm(FlaskForm):
             email = User.query.filter_by(email=email.data).first()
             if email:
                 raise ValidationError('That email is taken. Please choose another one')
+
+
+
+class PostForm(FlaskForm):
+    title = StringField('Tittle', validators=[DataRequired()])
+    content = TextAreaField('Content', validators=[DataRequired()])
+    submit_field = SubmitField('Post')

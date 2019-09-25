@@ -2,18 +2,21 @@ import os
 import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request
-from blog.form import RegistrationForm, LogInForm, UpdateAccountForm
+from blog.form import RegistrationForm, LogInForm, UpdateAccountForm, PostForm
 from blog import app, db, b_crypt
 from blog.models import Post, User
 from flask_login import login_user, current_user, logout_user, login_required
 
+"""""
 posts = [{'Author': 'John', 'Title': 'book1', 'Content': 'Sci fi', 'Date_Posted': 'April 20 2018'},
          {'Author': 'Ryan', 'Title': 'book2', 'Content': 'Action', 'Date_Posted': 'April 25 2018'}]
+"""""
 
 
 @app.route('/')
 @app.route('/home')
 def home():
+    posts = Post.query.all()
     return render_template('home.html', title="Home", posts=posts)
 
 
@@ -96,7 +99,22 @@ def account():
                            image_file=image_file, form=form)
 
 
-@app.route("/posts/new")
+@app.route("/posts/new", methods=['POST', 'GET'])
 @login_required
 def new_posts():
-    return render_template('create_post.html', title='New Posts')
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your form has been created', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title='New Posts', form=form)
+
+
+@app.route("/post/<post_id>", methods=['POST', 'GET'])
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html',title = post.title, post=post)
+
+
